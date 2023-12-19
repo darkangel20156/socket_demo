@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.socket_demo.databinding.ItemRvMsgBinding
 
+
 class MsgAdapter(private val messages: ArrayList<Message>) :
     RecyclerView.Adapter<MsgAdapter.ViewHolder>() {
 
