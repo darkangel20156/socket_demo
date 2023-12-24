@@ -42,15 +42,21 @@ object SocketClient {
      * Close the connection
      */
     fun closeConnect() {
-        inputStreamReader?.close()
-        outputStream?.close()
-        socket?.apply {
-            shutdownInput()
-            shutdownOutput()
-            close()
+        try {
+            inputStreamReader?.close()
+            outputStream?.close()
+            socket?.apply {
+                shutdownInput()
+                shutdownOutput()
+                close()
+            }
+            Log.d(TAG, "Close connection")
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Log.e(TAG, "Failed to close connection")
         }
-        Log.d(TAG, "Close connection")
     }
+
 
     /**
      * Send data to server
@@ -58,12 +64,13 @@ object SocketClient {
      */
     fun sendToServer(msg: String) {
         Thread {
-            if (socket!!.isClosed) {
+            if (socket?.isClosed == true) {
                 Log.e(TAG, "sendToServer: Socket is closed")
                 return@Thread
             }
-            outputStream = socket?.getOutputStream()
+
             try {
+                outputStream = socket?.getOutputStream()
                 outputStream?.write(msg.toByteArray())
                 outputStream?.flush()
                 mCallback.otherMsg("toServer: $msg")
@@ -72,6 +79,7 @@ object SocketClient {
                 Log.e(TAG, "Failed to send message to server")
             }
         }.start()
+
     }
 
     class ClientThread(private val socket: Socket, private val callback: ClientCallback) : Thread() {
